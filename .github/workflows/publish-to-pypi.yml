@@ -35,6 +35,9 @@ jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI
     runs-on: ubuntu-latest
+    needs: calculate-version
+    env:
+      SEMVER: ${{ needs.calculate-version.outputs.semVer }}
     steps:
     - uses: actions/checkout@master
     - name: Set up Python 3.10
@@ -47,15 +50,24 @@ jobs:
         pip install
         build
         --user
-    - name: Build a binary wheel and a source tarball
+    - name: Build binary wheel
       run: >-
-        python -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
-    - name: Publish distribution 📦 to PyPI
-      if: startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        python setup.py $SEMVER sdist bdist_wheel
+    - name: Install twine
+      run: >-
+        python3 -m pip install --upgrade twine
+    - name: Upload to PyPI
+      run: >-
+        twine upload --repository-url https://upload.pypi.org/legacy/ dist/* --username "${{ secrets.PYPI_USERNAME }}" --password "${{ secrets.PYPI_API_TOKEN }}"
+#     - name: Build a binary wheel and a source tarball
+#       run: >-
+#         python -m
+#         build
+#         --sdist
+#         --wheel
+#         --outdir dist/
+#     - name: Publish distribution 📦 to PyPI
+#       if: startsWith(github.ref, 'refs/tags')
+#       uses: pypa/gh-action-pypi-publish@release/v1
+#       with:
+#         password: ${{ secrets.PYPI_API_TOKEN }}
