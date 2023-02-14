@@ -1,0 +1,5 @@
+UQpy ==4.0.5
+wheel == 0.38.1
+twine == 3.4.1
+pathlib~=1.0.1
+setuptools~=65.5.1
