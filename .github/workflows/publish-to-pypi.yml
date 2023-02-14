@@ -50,12 +50,12 @@ jobs:
         pip install
         build
         --user
+    - name: Install project requirements
+      run: >-
+        pip install -r requirements.txt 
     - name: Build binary wheel
       run: >-
         python setup.py $SEMVER sdist bdist_wheel
-    - name: Install twine
-      run: >-
-        python3 -m pip install --upgrade twine
     - name: Upload to PyPI
       run: >-
         twine upload --repository-url https://upload.pypi.org/legacy/ dist/* --username "${{ secrets.PYPI_USERNAME }}" --password "${{ secrets.PYPI_API_TOKEN }}"
