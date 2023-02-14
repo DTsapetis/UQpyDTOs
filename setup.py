@@ -8,7 +8,7 @@ setup(
     name='UQpyDTOs',
     version=version,
     url='https://github.com/DTsapetis/UQpyDTOs',
-    author="Dimitris Tsapetis"
+    author="Dimitris Tsapetis",
     license='MIT',
     platforms=["OSX", "Windows", "Linux"],
     install_requires=[
