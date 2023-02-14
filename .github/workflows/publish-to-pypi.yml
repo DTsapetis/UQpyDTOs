@@ -56,9 +56,13 @@ jobs:
     - name: Build binary wheel
       run: >-
         python setup.py $SEMVER sdist bdist_wheel
-    - name: Upload to PyPI
+    - shell: bash
+      name: Upload to PyPI
+      env:
+        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        twine upload --repository-url https://upload.pypi.org/legacy/ dist/* --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.SuperSecret }}
+        twine upload --repository-url https://upload.pypi.org/legacy/ dist/* --username "$PYPI_USERNAME" --password "$PYPI_API_TOKEN"
 #     - name: Build a binary wheel and a source tarball
 #       run: >-
 #         python -m
