@@ -7,6 +7,7 @@ from setuptools import setup, find_packages
 setup(
     name='UQpyDTOs',
     version=version,
+    description="A collection of DTOs to deserialize json into UQpy classes",
     url='https://github.com/DTsapetis/UQpyDTOs',
     author="Dimitris Tsapetis",
     license='MIT',
