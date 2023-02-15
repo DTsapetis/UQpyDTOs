@@ -56,11 +56,11 @@ jobs:
     - name: Build binary wheel
       env:
         SEMVER: ${{ needs.calculate-version.outputs.semVer }}
-      run: >-
+      run: |
         python setup.py $SEMVER sdist bdist_wheel
     - name: Upload to PyPI
       env:
         PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
         PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-      run: >-
+      run: |
         twine upload --repository-url https://upload.pypi.org/legacy/ dist/* --username $PYPI_USERNAME --password $PYPI_API_TOKEN
