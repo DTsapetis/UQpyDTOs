@@ -4,11 +4,14 @@ version = sys.argv[1]
 del sys.argv[1]
 from setuptools import setup, find_packages
 
+with open('README.rst') as f:
+    readme = f.read()
+
 setup(
     name='UQpyDTOs',
     version=version,
     long_description_content_type="text/markdown",
-    long_description=README,
+    long_description=readme,
     description="A collection of DTOs to deserialize json into UQpy classes",
     url='https://github.com/DTsapetis/UQpyDTOs',
     author="Dimitris Tsapetis",
