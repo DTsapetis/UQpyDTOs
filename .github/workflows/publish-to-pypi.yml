@@ -58,8 +58,8 @@ jobs:
     - name: Build binary wheel
       run: |
         python setup.py ${{env.SEMVER}} sdist bdist_wheel
-#     - name: Publish package to PyPI
-#       uses: pypa/gh-action-pypi-publish@release/v1
-#       with:
-#         password: ${{ secrets.PYPI_API_TOKEN }}
-#         packages_dir: dist/
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        packages_dir: dist/
