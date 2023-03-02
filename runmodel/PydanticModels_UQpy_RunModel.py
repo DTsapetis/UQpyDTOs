@@ -21,6 +21,7 @@ class ThirdPartyModel(BaseModel):
     delete_files: bool = False
     model_dir: str = 'Model_Runs'
 
+
 class RunModel(BaseModel):
     model: ThirdPartyModel
     # samples: Optional[list] = None
