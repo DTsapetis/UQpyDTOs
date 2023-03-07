@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Literal, Union
 from typing_extensions import Annotated
 
-from sampling.mcmc.StretchDto import StretchDto
+from src.sampling.mcmc.StretchDto import StretchDto
 
 class ReliabilityMethodBaseDTO(BaseModel):
     pass
