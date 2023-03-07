@@ -8,6 +8,9 @@ class UQpyDTO(BaseModel):
     def is_primitive(obj):
         return not hasattr(obj, '__dict__')
 
+    # def init_to_text(self) -> (str, str):
+    #     pass
+
     def generate_code(self):
         prerequisite_list = ""
         fields = Enumerable(self.__dict__.items())

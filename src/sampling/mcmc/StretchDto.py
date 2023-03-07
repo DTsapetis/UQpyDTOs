@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import re
 
-from UQpy.sampling.mcmc.Stretch import Stretch
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from src.UQpyDTO import UQpyDTO
 
 
-class StretchDto(BaseModel):
+class StretchDto(UQpyDTO):
     loglikelihood_file: str = Field(..., alias='logLikelihoodFile')
     loglikelihood_function: str = Field(..., alias='logLikelihoodPath')
     burn_length: int = Field(..., alias='burn-in')
@@ -17,7 +18,8 @@ class StretchDto(BaseModel):
     random_state: int = Field(..., alias='randomState')
     scale: float
 
-    def generate_code(self):
+    def init_to_text(self):
+        from UQpy.sampling.mcmc.Stretch import Stretch
         c = Stretch
 
         class_name = c.__module__.split(".")[-1]
@@ -41,6 +43,7 @@ class StretchDto(BaseModel):
             str_parameters += key + "=" + str(stretch_parameters[key]) + ","
 
         prerequisite_str = import_statement + import_likehood_statement
-        sampling_str = "sampling = " + class_name + "(" + str_parameters + ")\n"
+        prerequisite_str += "sampling = " + class_name + "(" + str_parameters + ")\n"
+        sampling_str = "sampling"
 
         return (prerequisite_str, sampling_str)

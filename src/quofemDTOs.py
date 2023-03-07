@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel
 
+from .distributions.UniformDTOs import DistributionDTO
 from .modules.ModuleDTOs import ModuleDTO
 from .sampling.mcmc.StretchDto import StretchDto
 
@@ -67,7 +68,7 @@ class Model(BaseModel):
     UQ: ModuleDTO
     correlationMatrix: List[int]
     localAppDir: str
-    randomVariables: List[RandomVariable]
+    randomVariables: List[DistributionDTO]
     remoteAppDir: str
     runType: str
     workingDir: str

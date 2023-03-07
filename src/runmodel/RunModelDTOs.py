@@ -1,7 +1,7 @@
 from typing import List
 from pathlib import Path
 
-from preprocess.models import RandomVariable
+from src.quofemDTOs import RandomVariable
 
 
 class RunModelDTO:
@@ -21,7 +21,7 @@ class RunModelDTO:
         run_model_code = [
             'from UQpy.run_model.RunModel import RunModel',
             'from UQpy.run_model.model_execution.ThirdPartyModel import ThirdPartyModel',
-            f"third_party_model = ThirdPartyModel(var_names={var_names})",
+            f"third_party_model = ThirdPartyModel(var_names={var_names}, input_template='params_template.in', model_script='model_script.py', model_object_name='model', output_script='postprocess_script.py', output_object_name='compute_limit_state')",
             'run_model = RunModel(model=third_party_model)',
         ]
 
