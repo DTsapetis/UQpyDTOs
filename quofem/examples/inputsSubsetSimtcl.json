@@ -1,0 +1,79 @@
+{
+    "Applications": {
+        "FEM": {
+            "Application": "OpenSees",
+            "ApplicationData": {
+                "MS_Path": "{Current_Dir}/.",
+                "mainScript": "dummyModel.tcl",
+                "postprocessScript": ""
+            }
+        },
+        "UQ": {
+            "Application": "UQpy",
+            "ApplicationData": {}
+        }
+    },
+    "EDP": [{
+            "length": 1,
+            "name": "p1",
+            "type": "scalar"
+        },
+        {
+            "length": 1,
+            "name": "p2",
+            "type": "scalar"
+        }
+    ],
+    "FEM": {},
+    "UQ": {
+        "methodData": {
+            "method": "SubsetSimulation",
+            "conditionalProbability": 0.1,
+            "failureThreshold": 0,
+            "maxLevels": 10,
+            "samplingMethod": {
+                "burn-in": 0,
+                "jump": 1,
+                "logLikelihoodFile": "/Users/dimitris/Desktop/Documents/0_PostDoc/0_Research_Projects/1_UQpy_quoFEM/preprocess/local_Rosenbrock.py",
+                "logLikelihoodPath": "Rosenbrock",
+                "method": "Stretch",
+                "numChains": 1,
+                "dimension": 2,
+                "randomState": 112,
+                "scale": 2
+            }
+        },
+        "uqType": "Reliability"
+    },
+    "correlationMatrix": [
+        1,
+        0,
+        0,
+        1
+    ],
+    "localAppDir": "/Users/aakash/SimCenter/SimCenterBackendApplications",
+    "randomVariables": [{
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": -10,
+            "name": "p1",
+            "refCount": 2,
+            "upperbound": 10,
+            "value": "RV.p1",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": -10,
+            "name": "p2",
+            "refCount": 2,
+            "upperbound": 10,
+            "value": "RV.p2",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/Users/aakash/SimCenter/SimCenterBackendApplications",
+    "runType": "runningLocal",
+    "workingDir": "/Users/aakash/Documents/quoFEM/LocalWorkDir"
+}

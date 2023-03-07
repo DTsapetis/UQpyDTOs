@@ -1,7 +1,9 @@
-from PydanticModels_quoFEM_scInputJSON import ScInputJSONFile
-from PydanticModels_quoFEM_RVs import randomVariables
-from PydanticModels_UQpy_Distributions import Normal, Uniform
-from createRunModelCommands import *
+from pathlib import Path
+
+from quofem.examples.runmodel.PydanticModels_UQpy_RunModel import ValidateModelFilePaths
+from quofem.examples.runmodel.PydanticModels_quoFEM_scInputJSON import ScInputJSONFile
+from quofem.examples.runmodel.createRunModelCommands import createTemplateFile, createModelScript, \
+    createPostProcessScriptLimitState, createVarNamesList, createRunModelImportLines, createRunModelBodyLines
 
 
 def createDistributionsImportLines(randomVariables) -> str:
@@ -34,7 +36,8 @@ def main():
     createTemplateFile(randomVariables=inputData.randomVariables)
     createModelScript(driverScript="driver")
     createPostProcessScriptLimitState()
-    ValidateModelFilePaths(input_template=Path('params_template.in'), model_script=Path('model_script.py'), output_script=Path('post_process_script.py'))
+    ValidateModelFilePaths(input_template=Path('params_template.in'), model_script=Path('model_script.py'),
+                           output_script=Path('post_process_script.py'))
     varNamesList = createVarNamesList(randomVariables=inputData.randomVariables)
     runModelImportLines = createRunModelImportLines()
     runModelBodyLines = createRunModelBodyLines(varNamesList=varNamesList)

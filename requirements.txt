@@ -3,3 +3,6 @@ wheel == 0.38.1
 twine == 3.4.1
 pathlib~=1.0.1
 setuptools~=65.5.1
+pydantic ==1.10.5
+py-linq == 1.4.0
+click == 8.1.3
