@@ -1,15 +1,12 @@
 import pydantic
 import typing
-# import scipy.stats as st
-# import numpy as np
-
-allowableInputTypes = typing.Literal["Parameters", "Moments", "Dataset"]
-# allowableVariableClasses = typing.Literal["Design", "Uniform", "NA", "Uncertain"]
+import scipy.stats as st
+import numpy as np
 
 ############################################
-# def readFile(path):
-#     with open(path, "r") as f:
-#         return np.genfromtxt(f)
+def readFile(path):
+    with open(path, "r") as f:
+        return np.genfromtxt(f)
 
 ############################################
 class RVCommonData(pydantic.BaseModel):
@@ -29,19 +26,6 @@ class UniformVariableClass(RVCommonData):
         
 class NAVariableClass(RVCommonData):
     variableClass: typing.Literal["NA"]
-
-
-# class randomVariableClass(pydantic.BaseModel):
-#     __root__: list[typing.Annotated[
-#         typing.Union[UncertainVariableClass, DesignVariableClass, UniformVariableClass,
-#         NAVariableClass
-#         ], pydantic.Field(discriminator="variableClass")]]
-    
-#     class Config:
-#         extra = pydantic.Extra.forbid
-
-# with open("rvClassSchema.json", "w") as f:
-#     json.dump(randomVariableClass.schema(), f, indent=4)
 
 # ############################################     
 class BetaUncertainVariable(UncertainVariableClass):
@@ -74,28 +58,9 @@ class UniformUncertainVariable(UncertainVariableClass):
 class WeibullUncertainVariable(UncertainVariableClass):
     distribution: typing.Literal["Weibull"]
 
-# class randomVariableDistributionsUncertain(randomVariableClass):
-#     __root__: list[typing.Annotated[typing.Union[BetaUncertainVariable, UniformUncertainVariable], 
-#     pydantic.Field(discriminator="distribution")]]
-    
-#     class Config:
-#         extra = pydantic.Extra.forbid
-
-# with open("rvDistUncertainSchema.json", "w") as f:
-#     json.dump(randomVariableDistributionsUncertain.schema(), f, indent=4)
-
 # ############################################      
 class UniformUniformVariable(UniformVariableClass):
     distribution: typing.Literal["Uniform"]
-
-# class randomVariableDistributionsUniform(randomVariableClass):
-#     __root__: list[UniformUniformVariable]
-    
-#     class Config:
-#         extra = pydantic.Extra.forbid
-
-# with open("rvDistUniformSchema.json", "w") as f:
-#     json.dump(randomVariableDistributionsUniform.schema(), f, indent=4)
 
 ############################################     
 class BetaUncertainData(BetaUncertainVariable):
@@ -137,14 +102,14 @@ class BetaDataset(BetaUncertainData):
     inputType: typing.Literal["Dataset"]
     dataDir: str
     
-    # def _to_scipy(self):
-    #     loc = self.lowerbound
-    #     scale = self.upperbound - self.lowerbound
-    #     data = readFile(self.dataDir)
-    #     params = st.beta.fit(data=data, floc=loc, fscale=scale)
-    #     a = params[0]
-    #     b = params[1]
-    #     return {"a": a, "b": b, "loc": loc, "scale": scale}
+    def _to_scipy(self):
+        loc = self.lowerbound
+        scale = self.upperbound - self.lowerbound
+        data = readFile(self.dataDir)
+        params = st.beta.fit(data=data, floc=loc, fscale=scale)
+        a = params[0]
+        b = params[1]
+        return {"a": a, "b": b, "loc": loc, "scale": scale}
 
 ############################################
 class ChiSquaredUncertainData(ChiSquaredUncertainVariable):
@@ -241,14 +206,29 @@ class NormalParameters(NormalUncertainData):
     mean: float
     stdDev: pydantic.PositiveFloat
 
+    def _to_scipy(self):
+        loc = self.mean
+        scale = self.stdDev
+        return {"loc": loc, "scale": scale}
+
 class NormalMoments(NormalUncertainData):
     inputType: typing.Literal["Moments"]
     mean: float
     stdDev: pydantic.PositiveFloat
 
+    def _to_scipy(self):
+        loc = self.mean
+        scale = self.stdDev
+        return {"loc": loc, "scale": scale}
+
 class NormalDataset(NormalUncertainData):
     inputType: typing.Literal["Dataset"]
     dataDir: str
+
+    def _to_scipy(self):
+        data = readFile(self.dataDir)
+        params = st.beta.fit(data=data)
+        return {"loc": params[0], "scale": params[1]}
 
 ############################################     
 class TruncatedExponentialUncertainData(TruncatedExponentialUncertainVariable):
@@ -285,15 +265,32 @@ class UniformParameters(UniformUncertainData):
         if 'lowerbound' in values and v <= values['lowerbound']:
             raise ValueError(f"The upper bound must be bigger than the lower bound {values['lowerbound']}. Got a value of {v}.")
         return v
+    
+    def _to_scipy(self):
+        loc = self.lowerbound
+        scale = self.upperbound - self.lowerbound
+        return {"loc": loc, "scale": scale}
+
 
 class UniformMoments(UniformUncertainData):
     inputType: typing.Literal["Moments"]
     mean: float
     standardDev: pydantic.PositiveFloat
 
+    def _to_scipy(self):
+        loc = self.mean - np.sqrt(12)*self.standardDev/2
+        scale = np.sqrt(12)*self.standardDev
+        return {"loc": loc, "scale": scale}
+
 class UniformDataset(UniformUncertainData):
     inputType: typing.Literal["Dataset"]
     dataDir: str
+
+    def _to_scipy(self):
+        data = readFile(self.dataDir)
+        low = np.min(data)
+        high = np.max(data)
+        return {"loc": low, "scale": high - low}
 
 ############################################
 class WeibullUncertainData(WeibullUncertainVariable):
@@ -324,33 +321,3 @@ randomVariables = list[typing.Union[BetaParameters, BetaMoments, BetaDataset,\
                                 TruncatedExponentialParameters, TruncatedExponentialMoments, TruncatedExponentialDataset,\
                                 UniformParameters, UniformMoments, UniformDataset,\
                                 WeibullParameters, WeibullMoments, WeibullDataset]]
-
-# class randomVariables(pydantic.BaseModel):
-#     __root__: list[typing.Union[BetaParameters, BetaMoments, BetaDataset, 
-#                                 ChiSquaredParameters, ChiSquaredMoments, ChiSquaredDataset,
-#                                 ExponentialParameters, ExponentialMoments, ExponentialDataset,
-#                                 GammaParameters, GammaMoments, GammaDataset,
-#                                 GumbelParameters, GumbelMoments, GumbelDataset,
-#                                 LognormalParameters, LognormalMoments, LognormalDataset,
-#                                 NormalParameters, NormalMoments, NormalDataset,
-#                                 TruncatedExponentialParameters, TruncatedExponentialMoments, TruncatedExponentialDataset,
-#                                 UniformParameters, UniformMoments, UniformDataset,
-#                                 WeibullParameters, WeibullMoments, WeibullDataset]]
-    # __root__: list[typing.Annotated[[
-    #                typing.Annotated[typing.Union[BetaParameters, UniformParameters], pydantic.Field(discriminator="distribution")],
-    #                typing.Annotated[typing.Union[BetaMoments, UniformMoments], pydantic.Field(discriminator="distribution")],
-    #                typing.Annotated[typing.Union[BetaDataset, UniformDataset], pydantic.Field(discriminator="distribution")]
-    #                ], pydantic.Field(discriminator="inputType")]]
-        # typing.Annotated[
-        # typing.Union[BetaParameters, BetaMoments, BetaDataset,
-        # UniformParameters, UniformMoments, UniformDataset,
-        # ], pydantic.Field(discriminator="inputType")]]
-    
-    # class Config:
-    #     extra = pydantic.Extra.forbid
-
-# with open('rvSchema.json', 'w') as f:
-#     json.dump(randomVariables.schema(), f, indent=4)
-# print(randomVariables.schema_json(indent=4))
-
-
