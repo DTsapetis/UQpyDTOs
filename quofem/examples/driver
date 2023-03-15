@@ -1,2 +1,2 @@
-"/Users/aakash/SimCenter/SimCenterBackendApplications/applications/performUQ/templateSub/simCenterSub" params.in SimCenterInput.RV SimCenterInput.tcl
+"/Users/dimitris/source/SimCenterBackendApplications/applications/performUQ/templateSub/simCenterSub" params.in SimCenterInput.RV SimCenterInput.tcl
 OpenSees SimCenterInput.tcl 1> ops.out 2>&1

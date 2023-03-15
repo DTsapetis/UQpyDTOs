@@ -1,0 +1,7 @@
+pset p1 "RV.p1"
+pset p2 "RV.p2"
+
+ set listQoI "p1 p2 "
+
+
+ source dummyModel.tcl

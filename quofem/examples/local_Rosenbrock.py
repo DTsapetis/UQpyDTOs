@@ -14,5 +14,6 @@ class Rosenbrock(DistributionND):
     def pdf(self, x):
         return np.exp(-(100*(x[:, 1]-x[:, 0]**2)**2+(1-x[:, 0])**2) / self.parameters['p'])
 
-    def log_pdf(self, x):
-        return -(100*(x[:, 1]-x[:, 0]**2)**2+(1-x[:, 0])**2)/self.parameters['p']
+    @staticmethod
+    def log_pdf( x):
+        return -(100*(x[:, 1]-x[:, 0]**2)**2+(1-x[:, 0])**2)/20
