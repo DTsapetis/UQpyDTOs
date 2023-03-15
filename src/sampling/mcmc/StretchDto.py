@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from typing import Literal, Annotated, Union
 
 from pydantic import Field
 
@@ -8,6 +9,7 @@ from src.UQpyDTO import UQpyDTO
 
 
 class StretchDto(UQpyDTO):
+    method: Literal['Stretch'] = 'Stretch'
     loglikelihood_file: str = Field(..., alias='logLikelihoodFile')
     loglikelihood_function: str = Field(..., alias='logLikelihoodPath')
     burn_length: int = Field(..., alias='burn-in')
@@ -47,3 +49,19 @@ class StretchDto(UQpyDTO):
         sampling_str = "sampling"
 
         return (prerequisite_str, sampling_str)
+
+
+class MetropolisHastingsDTO(UQpyDTO):
+    method: Literal['MH'] = 'MH'
+    loglikelihood_file: str = Field(..., alias='logLikelihoodFile')
+    loglikelihood_function: str = Field(..., alias='logLikelihoodPath')
+    burn_length: int = Field(..., alias='burn-in')
+    jump: int
+    method: str
+    dimension: int
+    n_chains: int = Field(..., alias='randomState')
+    random_state: int = Field(..., alias='randomState')
+    scale: float
+
+
+SamplingMethod = Annotated[Union[StretchDto, MetropolisHastingsDTO], Field(discriminator='method')]

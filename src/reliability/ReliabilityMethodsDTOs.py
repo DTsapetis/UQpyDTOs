@@ -5,7 +5,7 @@ from typing import Literal, Union
 from typing_extensions import Annotated
 
 from src.UQpyDTO import UQpyDTO
-from src.sampling.mcmc.StretchDto import StretchDto
+from src.sampling.mcmc.StretchDto import StretchDto, SamplingMethod
 
 
 class ReliabilityMethodBaseDTO(UQpyDTO):
@@ -17,10 +17,12 @@ class SubsetSimulationDTO(ReliabilityMethodBaseDTO):
     conditionalProbability: float
     failure_threshold: float = Field(..., alias="failureThreshold")
     maxLevels: int
+    initial_samples: int
     samplingMethod: StretchDto
 
     def init_to_text(self):
         from UQpy.reliability.SubsetSimulation import SubsetSimulation
+        from UQpy.sampling.MonteCarloSampling import MonteCarloSampling
         c = SubsetSimulation
 
         self.__create_postprocess_script()
@@ -28,8 +30,17 @@ class SubsetSimulationDTO(ReliabilityMethodBaseDTO):
 
         class_name = c.__module__.split(".")[-1]
         import_statement = "from " + c.__module__ + " import " + class_name + "\n"
+
+        import_statement += "from " + MonteCarloSampling.__module__ + " import " + \
+                            MonteCarloSampling.__module__.split(".")[-1] + "\n"
+
+        import_statement += f"monte_carlo = {MonteCarloSampling.__module__.split('.')[-1]}(distributions=marginals, nsamples={self.initial_samples})\n"
         input_str = "subset"
-        initializer = f"{input_str} = {class_name}(sampling={str(self.samplingMethod)}, conditional_probability={str(self.conditionalProbability)}, max_level={str(self.maxLevels)}, runmodel_object=run_model)\n"
+        initializer = f'{input_str} = {class_name}(sampling={self.samplingMethod}, ' \
+                      f'conditional_probability={self.conditionalProbability}, ' \
+                      f'max_level={self.maxLevels}, runmodel_object=run_model,' \
+                      f'samples_init=monte_carlo.samples)\n'
+
         prerequisite_str = import_statement + initializer
         return prerequisite_str, input_str
 

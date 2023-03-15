@@ -31,6 +31,7 @@
             "conditionalProbability": 0.1,
             "failureThreshold": 0,
             "maxLevels": 10,
+            "initial_samples": 100,
             "samplingMethod": {
                 "burn-in": 0,
                 "jump": 1,
