@@ -30,7 +30,7 @@ def preprocess(workflowinput, driverfile, runtype, ostype):
     code.append(marginals_code)
 
     runmodel_code = RunModelDTO.create_runmodel_with_variables_driver(variables=model.randomVariables,
-                                                                      driver_filename="driver")
+                                                                      driver_filename=driverfile)
     (uqmethod_code, _) = model.UQ.methodData.generate_code()
 
     code.append(runmodel_code)
