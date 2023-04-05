@@ -1,0 +1,2 @@
+"/Users/aakash/Desktop/quoFEM.app/Contents/MacOS/applications/performUQ/templateSub/simCenterSub"  params.in tmpSimCenter.params {TrussParams.py-template input}
+python3 TrussModel.py {Node_3_Disp_2 Node_2_Disp_2 - qoi} 1> ops.out 2>&1

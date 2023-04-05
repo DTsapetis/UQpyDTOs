@@ -34,7 +34,7 @@ class SubsetSimulationDTO(ReliabilityMethodBaseDTO):
         import_statement += "from " + MonteCarloSampling.__module__ + " import " + \
                             MonteCarloSampling.__module__.split(".")[-1] + "\n"
 
-        import_statement += f"monte_carlo = {MonteCarloSampling.__module__.split('.')[-1]}(distributions=marginals, nsamples={self.initial_samples})\n"
+        import_statement += f"monte_carlo = {MonteCarloSampling.__module__.split('.')[-1]}(distributions=dist, nsamples={self.initial_samples})\n"
         input_str = "subset"
         initializer = f'{input_str} = {class_name}(sampling={self.samplingMethod}, ' \
                       f'conditional_probability={self.conditionalProbability}, ' \

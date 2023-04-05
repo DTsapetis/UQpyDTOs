@@ -16,7 +16,7 @@ class StretchDto(UQpyDTO):
     jump: int
     method: str
     dimension: int
-    n_chains: int = Field(..., alias='randomState')
+    n_chains: int = Field(..., alias='numChains')
     random_state: int = Field(..., alias='randomState')
     scale: float
 
@@ -29,22 +29,24 @@ class StretchDto(UQpyDTO):
 
         stretch_parameters = self.dict()
         stretch_parameters.pop("method")
-        likelihood_file = stretch_parameters["loglikelihood_file"]
+        # likelihood_file = stretch_parameters["loglikelihood_file"]
         stretch_parameters.pop("loglikelihood_file")
-        likelihood_function = stretch_parameters["loglikelihood_function"]
+        # likelihood_function = stretch_parameters["loglikelihood_function"]
         stretch_parameters.pop("loglikelihood_function")
+        #
+        # likelihood_filename = re.split(r'[/.]', likelihood_file)[-2]
+        # import_likehood_statement = "from importlib.machinery import SourceFileLoader\n"
+        # import_likehood_statement += f"log_pdf_file = SourceFileLoader('{likelihood_filename}','{likelihood_file}').load_module()\n"
 
-        likelihood_filename = re.split(r'[/.]', likelihood_file)[-2]
-        import_likehood_statement = "from importlib.machinery import SourceFileLoader\n"
-        import_likehood_statement += f"log_pdf_file = SourceFileLoader('{likelihood_filename}','{likelihood_file}').load_module()\n"
-
-        stretch_parameters["log_pdf_target"] = f"log_pdf_file.{likelihood_function}"
+        # stretch_parameters["log_pdf_target"] = f"log_pdf_file.{likelihood_function}"
+        stretch_parameters["log_pdf_target"] = f"dist.log_pdf"
         str_parameters = str()
         for key in stretch_parameters:
             if stretch_parameters[key] is None: continue
             str_parameters += key + "=" + str(stretch_parameters[key]) + ","
 
-        prerequisite_str = import_statement + import_likehood_statement
+        # prerequisite_str = import_statement + import_likehood_statement
+        prerequisite_str = import_statement
         prerequisite_str += "sampling = " + class_name + "(" + str_parameters + ")\n"
         sampling_str = "sampling"
 
